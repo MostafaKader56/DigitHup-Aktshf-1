@@ -11,12 +11,14 @@ import 'package:e_learning/screens/notifications_screen.dart';
 import 'package:e_learning/screens/reset_password_screen.dart';
 import 'package:e_learning/screens/teacher_detail_screen.dart';
 
+import '../widgets/meeting_item.dart';
+
 var routes={
   AuthScreen.routeName: (_) => const AuthScreen(),
   HomeScreen.routeName: (_) => const HomeScreen(),
   TeacherDetailScreen.routeName: (_) => const TeacherDetailScreen(),
   CourseDetailScreen.routeName: (_) => const CourseDetailScreen(),
-  CourseDetailScreen.routeName: (_) => const CourseDetailScreen(),
+  VideoConferancePage.routeName: (_) => VideoConferancePage(),
   ChatRoomScreen.routeName: (_) => const ChatRoomScreen(),
   EditAccountScreen.routeName: (_) => const EditAccountScreen(),
   HomeSoonScreen.routeName: (_) => const HomeSoonScreen(),

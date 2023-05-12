@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:e_learning/models/main_data.dart';
 import 'package:e_learning/providers/auth.dart';
 import 'package:e_learning/providers/meeting.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_zoom_sdk/zoom_options.dart';
 import 'package:flutter_zoom_sdk/zoom_view.dart';
+import 'package:zego_uikit_prebuilt_video_conference/zego_uikit_prebuilt_video_conference.dart';
 
 class MeetingItem extends StatelessWidget {
   const MeetingItem({Key? key}) : super(key: key);
@@ -18,7 +20,7 @@ class MeetingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meeting = Provider.of<Meeting>(context, listen: false);
-    final user =  Provider.of<Auth>(context, listen: false);
+    final user = Provider.of<Auth>(context, listen: false);
     TextEditingController passwordController = TextEditingController();
     return InkWell(
       onTap: () {
@@ -63,7 +65,8 @@ class MeetingItem extends StatelessWidget {
               if (passwordController.text == meeting.password) {
                 joinMeeting(context,
                     meetingId: meeting.meetingId,
-                    meetingPassword: meeting.meetingPassword,name: "${user.authData['name']}${user.userId}");
+                    meetingPassword: meeting.meetingPassword,
+                    name: "${user.authData['name']}${user.userId}");
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("يرجي التآكد من كلمة المرور."),
@@ -72,9 +75,11 @@ class MeetingItem extends StatelessWidget {
             },
           ).show();
         } else {
+          // print('-----------------joinMeeting method Started-----------------');
           joinMeeting(context,
               meetingId: meeting.meetingId,
-              meetingPassword: meeting.meetingPassword,name: "${user.authData['name']}${user.userId}");
+              meetingPassword: meeting.meetingPassword,
+              name: "${user.authData['name']}${user.userId}");
         }
       },
       child: Container(
@@ -149,9 +154,30 @@ class MeetingItem extends StatelessWidget {
   }
 }
 
+void joinMeeting(BuildContext context,
+    {required String meetingId,
+    required String meetingPassword,
+    String name = 'username'}) {
+// Generate userId 6 digit length
+// Generate conferenceId with 10 digit length
+
+myMeetingId = meetingId;
+username = name;
+// print('==============$myMeetingId================');
+Navigator.of(context)
+              .pushNamed(VideoConferancePage.routeName);
+// Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) =>
+//                 VideoConferancePage()));
+}
+
 //API KEY & SECRET is required for below methods to work
 //Join Meeting With Meeting ID & Password
-joinMeeting(BuildContext context, {meetingId, meetingPassword,name='username'}) {
+//TODO: this creditials not working
+joinMeeting2(BuildContext context,
+    {meetingId, meetingPassword, name = 'username'}) {
   late Timer timer;
   bool _isMeetingEnded(String status) {
     var result = false;
@@ -164,15 +190,18 @@ joinMeeting(BuildContext context, {meetingId, meetingPassword,name='username'}) 
     return result;
   }
 
+  // ZoomOptions zoomOptions = ZoomOptions(
+  //   domain: "zoom.us",
+  //   appKey: "FnoAY6Y7QNWQ1Q9hS8cZQw", //API KEY FROM ZOOM
+  //   appSecret: "6RsjVbPtEkIqSKzKZED4DxMSE3FlmKZ6SpbX", //API SECRET FROM ZOOM
+  // );
   ZoomOptions zoomOptions = ZoomOptions(
     domain: "zoom.us",
-    appKey: "FnoAY6Y7QNWQ1Q9hS8cZQw", //API KEY FROM ZOOM
-    appSecret: "6RsjVbPtEkIqSKzKZED4DxMSE3FlmKZ6SpbX", //API SECRET FROM ZOOM
+    appKey: zoomApi, //API KEY FROM ZOOM
+    appSecret: zoomSec, //API SECRET FROM ZOOM
   );
   var meetingOptions = ZoomMeetingOptions(
       userId: name,
-
-
 
       /// pass username for join meeting only --- Any name eg:- EVILRATT.
       meetingId: meetingId,
@@ -211,8 +240,7 @@ joinMeeting(BuildContext context, {meetingId, meetingPassword,name='username'}) 
         timer = Timer.periodic(const Duration(seconds: 2), (timer) {
           zoom.meetingStatus(meetingOptions.meetingId!).then((status) {
             if (kDebugMode) {
-              print("${"[Meeting Status Polling] : " +
-                  status[0]} - " +
+              print("${"[Meeting Status Polling] : " + status[0]} - " +
                   status[1]);
             }
           });
@@ -220,8 +248,9 @@ joinMeeting(BuildContext context, {meetingId, meetingPassword,name='username'}) 
       });
     }
   }).catchError((error) {
+    print('error with zoom options');
     if (kDebugMode) {
-      print( error);
+      print(error);
     }
   });
   // else {
@@ -235,4 +264,33 @@ joinMeeting(BuildContext context, {meetingId, meetingPassword,name='username'}) 
   //     ));
   //   }
   // }
+}
+
+class VideoConferancePage extends StatelessWidget {
+  VideoConferancePage({super.key});
+  static const routeName = 'VideoConferancePage';
+
+
+  final String userId = Random().nextInt(900000 + 100000).toString();
+/*
+ZEGO_APP_ID=1839004996
+ZEGO_APP_SIGN=32e9f855c9c970fe400414a01eeb0b365483290b34b8e720176c4cfd589ef79e
+*/
+
+  @override
+  Widget build(BuildContext context) {
+    print('conferanceID: $myMeetingId');
+    return SafeArea(
+      child: ZegoUIKitPrebuiltVideoConference(
+        appID:
+            appId, // Fill in the appID that you get from ZEGOCLOUD Admin Console.
+        appSign:
+            appSign, // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
+        userID: userId,
+        userName: username,
+        conferenceID: myMeetingId,
+        config: ZegoUIKitPrebuiltVideoConferenceConfig(),
+      ),
+    );
+  }
 }

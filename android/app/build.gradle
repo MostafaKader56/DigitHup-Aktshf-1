@@ -47,7 +47,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.logaty.app"
-        minSdkVersion 21
+        // minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -61,8 +62,11 @@ android {
 
             // added things from here:
 
-            minifyEnabled true
-            useProguard true
+            shrinkResources false
+            minifyEnabled false
+
+            // minifyEnabled true
+            // useProguard true
 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

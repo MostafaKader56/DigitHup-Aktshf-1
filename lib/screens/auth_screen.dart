@@ -50,8 +50,11 @@ class AuthCard extends StatefulWidget {
   @override
   AuthCardState createState() => AuthCardState();
 }
+
 enum AuthMode { login, signUp }
-class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin {
+
+class AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey();
   var _isLoading = false;
   var _securePassword = true;
@@ -66,24 +69,29 @@ class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin 
     if (!_formKey.currentState!.validate()) {
       return;
     }
-   _formKey.currentState!.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
     // Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.routeName, (r) => false);
     try {
       if (_authMode == AuthMode.login) {
-        await Provider.of<Auth>(context, listen: false).login(email: _authData['email'],
-            password: _authData['password']).then((_) {
-          Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.routeName, (r) => false);
+        await Provider.of<Auth>(context, listen: false)
+            .login(email: _authData['email'], password: _authData['password'])
+            .then((_) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(HomeScreen.routeName, (r) => false);
         });
       } else {
-        await Provider.of<Auth>(context, listen: false).signUp(
+        await Provider.of<Auth>(context, listen: false)
+            .signUp(
           name: _authData['user_name'],
           password: _authData['password'],
           email: _authData['email'],
-        ).then((_) {
-          Navigator.of(context).pushNamedAndRemoveUntil(HomeScreen.routeName, (r) => false);
+        )
+            .then((_) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(HomeScreen.routeName, (r) => false);
         });
       }
     } on HttpException catch (error) {
@@ -132,8 +140,10 @@ class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin 
                           decoration: InputDecoration(
                             labelText: 'اسم المستخدم',
                             labelStyle: Theme.of(context).textTheme.bodyText2,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 20.0, horizontal: 10.0),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(2)),
                             // enabledBorder: OutlineInputBorder(
                             //   borderSide: BorderSide(color: Theme.of(context).indicatorColor),
                             // ),
@@ -157,8 +167,10 @@ class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin 
                         decoration: InputDecoration(
                           labelText: 'البريد الإلكتروني',
                           labelStyle: Theme.of(context).textTheme.bodyText1,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(2)),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 10.0),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(2)),
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (val) {
@@ -181,11 +193,16 @@ class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin 
                         decoration: InputDecoration(
                           labelText: 'كلمة المرور',
                           labelStyle: Theme.of(context).textTheme.bodyText1,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(2),),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 10.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                           suffixIcon: IconButton(
-                            icon: _securePassword ? const Icon(FontAwesomeIcons.eye) : const Icon(FontAwesomeIcons.eyeSlash),
-                            onPressed: (){
+                            icon: _securePassword
+                                ? const Icon(FontAwesomeIcons.eye)
+                                : const Icon(FontAwesomeIcons.eyeSlash),
+                            onPressed: () {
                               setState(() {
                                 _securePassword = !_securePassword;
                               });
@@ -222,64 +239,86 @@ class AuthCardState extends State<AuthCard> with SingleTickerProviderStateMixin 
                                 ),
                               ),
                             ),
-                            child:  Text(
+                            child: Text(
                               _authMode == AuthMode.signUp ? 'تسجيل' : 'دخول',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                           ),
                         ),
                       if (_authMode == AuthMode.login)
                         Container(
-                          margin: const EdgeInsets.only(top: 15,right: 5),
+                          margin: const EdgeInsets.only(top: 15, right: 5),
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed(ResetPasswordScreen.routeName);
+                              Navigator.of(context)
+                                  .pushNamed(ResetPasswordScreen.routeName);
                             },
                             child: Text(
                               "نسيت كلمة المرور؟",
-                              style: Theme.of(context).textTheme.headline3!.copyWith(
-                                color: Theme.of(context).backgroundColor,
-                                fontSize: 16,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3!
+                                  .copyWith(
+                                    color: Theme.of(context).backgroundColor,
+                                    fontSize: 16,
+                                  ),
                             ),
                           ),
                         ),
                       const SizedBox(height: 10),
-                      Container(
-                        alignment: Alignment.topCenter,
-                        margin: const EdgeInsets.only(top: 30),
-                        child: Text(
-                          _authMode == AuthMode.login ?
-                          'ليس لديك حساب؟' : 'لديك حساب بالفعل؟',
-                          style: Theme.of(context).textTheme.headline6,
+                      InkWell(
+                        onTap: () {
+                          if (_authMode == AuthMode.login) {
+                            _authMode = AuthMode.signUp;
+                          } else {
+                            _authMode = AuthMode.login;
+                          }
+                          setState(() {
+                            
+                          });
+                        },
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          margin: const EdgeInsets.only(top: 30),
+                          child: Text(
+                            _authMode == AuthMode.login
+                                ? 'ليس لديك حساب؟'
+                                : 'لديك حساب بالفعل؟',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                         ),
                       ),
                       const SizedBox(
                         height: 20,
                       ),
                       SizedBox(
-                          width: context.screenWidth * 0.9,
-                          height: 52,
-                          child: OutlinedButton(
-                            onPressed: _switchMode,
-                            style: ButtonStyle(
-                              backgroundColor:
-                              MaterialStateProperty.all(const Color.fromRGBO(232, 237, 255,1)),
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2)),
-                              ),
-                            ),
-                            child: Text(
-                              _authMode == AuthMode.login ?
-                              'تسجيل حساب جديد' : 'دخول لحسابي',
-                              style: Theme.of(context).textTheme.headline6!.copyWith(
-                                color: const Color.fromRGBO(69, 104, 61,1),
-                              ),
+                        width: context.screenWidth * 0.9,
+                        height: 52,
+                        child: OutlinedButton(
+                          onPressed: _switchMode,
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromRGBO(232, 237, 255, 1)),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(2)),
                             ),
                           ),
+                          child: Text(
+                            _authMode == AuthMode.login
+                                ? 'تسجيل حساب جديد'
+                                : 'دخول لحسابي',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(
+                                  color: const Color.fromRGBO(69, 104, 61, 1),
+                                ),
+                          ),
                         ),
+                      ),
                     ],
                   ),
                 ),

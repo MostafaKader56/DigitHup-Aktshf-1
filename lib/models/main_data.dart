@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // title
 String mainTitle = "أكتشف سر لغتي";
 // url
@@ -6,24 +7,37 @@ String mainTitle = "أكتشف سر لغتي";
 // String siteUrl = "http://127.0.0.1:8000/";
 const mainUrl = "https://dev.digithup.net/api/v1/";
 const siteUrl = "https://dev.digithup.net/";
-// const zoomApi ='FnoAY6Y7QNWQ1Q9hS8cZQw';
-// const zoomSec = '6RsjVbPtEkIqSKzKZED4DxMSE3FlmKZ6SpbX';
+
+// zoomApi and zoomSec is not working.
+const zoomApi = 'FnoAY6Y7QNWQ1Q9hS8cZQw';
+const zoomSec = '6RsjVbPtEkIqSKzKZED4DxMSE3FlmKZ6SpbX';
+
+// this is the new credentials for the new zoom package.
+const int appId = 1839004996;
+const String appSign =
+    '32e9f855c9c970fe400414a01eeb0b365483290b34b8e720176c4cfd589ef79e';
+
+String myMeetingId = '';
+String username = '';
+
 // width and height of screens
 extension MediaQueryValues on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
   double get screenHeight => MediaQuery.of(this).size.height;
 }
+
 /// ***********************************************************************
 // lightTheme
 final lightTheme = ThemeData(
   fontFamily: 'Cairo',
   primarySwatch: Colors.blue, // uses
   backgroundColor: const Color.fromRGBO(130, 210, 231, 1), // uses
-  canvasColor: const Color.fromRGBO(255, 255, 255, 1), // background color of pages
+  canvasColor:
+      const Color.fromRGBO(255, 255, 255, 1), // background color of pages
   primaryColor: const Color.fromRGBO(85, 167, 151, 1),
   bottomAppBarColor: const Color.fromRGBO(107, 108, 107, 1),
   dividerColor: const Color.fromRGBO(220, 223, 227, 1),
-  indicatorColor: const Color.fromRGBO(173, 212, 97,1), // uses
+  indicatorColor: const Color.fromRGBO(173, 212, 97, 1), // uses
   shadowColor: const Color.fromRGBO(130, 210, 231, 1), // uses
   // app bar
   appBarTheme: const AppBarTheme(
@@ -87,6 +101,7 @@ final lightTheme = ThemeData(
     ),
   ),
 );
+
 /// *********************************************************************** ///
 // loadingStyle
 Widget loadingStyle(BuildContext context) {
@@ -102,12 +117,13 @@ Widget loadingStyle(BuildContext context) {
     ),
   );
 }
+
 // no Items
 Widget noItems(BuildContext context) {
   return Center(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const[
+      children: const [
         Text('لا يوجد عناصر مضافة حتي الآن'),
         SizedBox(width: 5),
         //Icon(FontAwesomeIcons.heartCrack,color: Theme.of(context).appBarTheme.foregroundColor,),
@@ -115,8 +131,13 @@ Widget noItems(BuildContext context) {
     ),
   );
 }
-// screenStartWidget
-Widget screenStartWidget(BuildContext context,bool isLoading, {var items, required Widget buildWidget}) {
-  return isLoading ? loadingStyle(context): items.isEmpty ? noItems(context) : buildWidget;
-}
 
+// screenStartWidget
+Widget screenStartWidget(BuildContext context, bool isLoading,
+    {var items, required Widget buildWidget}) {
+  return isLoading
+      ? loadingStyle(context)
+      : items.isEmpty
+          ? noItems(context)
+          : buildWidget;
+}
